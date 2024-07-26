@@ -1,3 +1,4 @@
+import re
 import fitz
 from collections import Counter
 
@@ -14,11 +15,12 @@ def count_words(text, words):
     text = text.lower()
     word_counts = Counter()
     for word in words:
-        word_counts[word] = text.count(word)
+        pattern = r'\b' + re.escape(word) + r'\b'
+        word_counts[word] = len(re.findall(pattern, text))
     return word_counts
 
 # Path to the PDF file
-pdf_path = r"C:\Users\Gebruiker\Desktop\EU regulations\Original Directive.pdf"
+pdf_path = r"C:\Users\Gebruiker\Desktop\EU regulations\DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL.pdf"
 
 # Estract and count words
 text = extract_text_from_pdf(pdf_path)
@@ -29,7 +31,7 @@ for word, count in counts.items():
 
 # Calculate the value of x
 num_obb = counts["shall"] + counts["have to"]
-sum_other_words = sum(counts[word] for word in words_to_count if word != "shall" and word != "have to")
+sum_other_words = sum(counts[word] for word in words_to_count)
 
 # Avoid division by zero by adding a conditional check
 if sum_other_words == 0:
